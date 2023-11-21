@@ -107,7 +107,6 @@ namespace Saper.ViewModel
 
         private void InitializeGame()
         {
-            // Создаем экземпляр Zemledelie с использованием выбранной сложности
             _zemledelie = new Zemledelie(GetRows(), GetColumns());
 
             // Инициализируем ячейки в соответствии с Zemledelie
@@ -123,15 +122,10 @@ namespace Saper.ViewModel
                 }
             }
 
-            // Дополнительная логика инициализации статуса и других параметров, если необходимо
-            Status = "Game in progress";
         }
 
         private int GetRows()
         {
-            // Вернуть количество строк в соответствии с выбранной сложностью
-            // Например, для каждого уровня сложности может быть свое количество строк
-            // Замените этот код на свой
             switch (SelectedDifficulty)
             {
                 case "Easy":
@@ -146,9 +140,7 @@ namespace Saper.ViewModel
         }
 
         private int GetColumns()
-        {
-            // Вернуть количество столбцов в соответствии с выбранной сложностью
-            // Замените этот код на свой
+        { 
             switch (SelectedDifficulty)
             {
                 case "Easy":
@@ -178,15 +170,72 @@ namespace Saper.ViewModel
 
         private void CellClick(object parameter)
         {
-            // Обработка события клика по ячейке
-            // В параметре будет передаваться информация о ячейке (например, координаты)
+            var cell = parameter as CellViewModel;
 
+            if (cell != null && cell.DisplayText != "открыта") // Добавьте проверку на открытую ячейку
+            {
+                int row = Cells.IndexOf(cell) / Columns;
+                int column = Cells.IndexOf(cell) % Columns;
+
+                string cellContent = _zemledelie.OpenCell(row, column);
+                cell.DisplayText = cellContent;
+
+                if (cellContent == "Mine")
+                {
+                    Status = "Game over!";
+                }
+                else if (cellContent == "0")
+                {
+                    OpenAdjacentCells(row, column);
+                }
+
+                CheckGameCompletion();
+            }
+        }
+
+        private void OpenAdjacentCells(int row, int column)
+        {
+            // Добавьте логику для открытия ячеек рядом с указанной ячейкой
+            // Это может потребовать рекурсивного вызова OpenCell для каждой соседней ячейки
             // Пример:
-            // var cellInfo = (CellInfo)parameter;
-            // int row = cellInfo.Row;
-            // int column = cellInfo.Column;
+            OpenCellIfValid(row - 1, column - 1);
+            OpenCellIfValid(row - 1, column);
+            OpenCellIfValid(row - 1, column + 1);
+            OpenCellIfValid(row, column - 1);
+            OpenCellIfValid(row, column + 1);
+            OpenCellIfValid(row + 1, column - 1);
+            OpenCellIfValid(row + 1, column);
+            OpenCellIfValid(row + 1, column + 1);
+        }
 
-            // Ваш код обработки клика по ячейке
+        private void OpenCellIfValid(int row, int column)
+        {
+            // Дополнительная проверка, чтобы убедиться, что ячейка существует в массиве Pole
+            if (row >= 0 && row < _zemledelie.x && column >= 0 && column < _zemledelie.y)
+            {
+                // Теперь открываем ячейку
+                string cellContent = _zemledelie.OpenCell(row, column);
+                Cells[row * Columns + column].DisplayText = cellContent;
+
+                // Если содержимое ячейки равно "мина", то, возможно, нужно обработать завершение игры
+                if (cellContent == "Mine")
+                {
+                    Status = "Game over!";
+                    // Другая логика завершения игры
+                }
+                else if (cellContent == "0")
+                {
+                    // Если ячейка пуста, открываем ячейки рядом
+                    OpenAdjacentCells(row, column);
+                }
+            }
+        }
+
+        private void CheckGameCompletion()
+        {
+            // Добавьте логику для проверки условия завершения игры
+            // Например, проверьте, все ли ячейки открыты, кроме мин
+            // и выведите сообщение о победе, если это так
         }
 
     }

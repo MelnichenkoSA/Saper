@@ -7,19 +7,29 @@ namespace Saper.Model
     internal class Zemledelie : INotifyPropertyChanged
     {
         public string[,] Pole { get; set; }
+        public string[,] Values { get; set; }
         public int s;
         public int x;
         public int y;
         public Zemledelie(int x, int y)
         {
             Pole = new string[x + 2, y + 2];
+            Values = new string[x + 2, y + 2];
             s = x * y;
             this.x = x;
             this.y = y;
+            Generator();
         }
         public void Generator()
         {
             Full();
+            for (int i = 1; i < x + 1; i++)
+            {
+                for (int j = 1; j < y + 1; j++)
+                {
+                    Values[i, j] = " ";
+                }
+            }
             double ss = Convert.ToDouble(s);
             int mines = Convert.ToInt32(ss / 100 * 16);
             Random rnd = new Random();
@@ -122,6 +132,27 @@ namespace Saper.Model
                 Console.WriteLine();
             }
 
+        }
+
+        public string OpenCell(int row, int column)
+        {
+            // Проверяем, что переданные координаты в пределах массива
+            if (row < 0 || row >= x || column < 0 || column >= y)
+            {
+                return string.Empty; // Возвращаем пустую строку для некорректных координат
+            }
+
+            // Проверяем, открыта ли уже ячейка
+            if (Values[row, column] == "открыта")
+            {
+                return Pole[row, column]; // Если открыта, возвращаем её текущее состояние
+            }
+
+            // Открываем ячейку
+            Values[row, column] = "открыта";
+
+            // Возвращаем содержимое ячейки
+            return Pole[row, column];
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
