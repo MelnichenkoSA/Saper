@@ -19,7 +19,6 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <TextBox/>
         <DockPanel Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Cells}" >
                 <ItemsControl.ItemsPanel>

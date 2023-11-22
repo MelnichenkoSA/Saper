@@ -117,7 +117,7 @@ namespace Saper.ViewModel
             {
                 for (int j = 1; j <= _zemledelie.y; j++)
                 {
-                    string cellContent = _zemledelie.Pole[i, j]; // Получаем содержимое ячейки из Zemledelie
+                    string cellContent = _zemledelie.Values[i, j]; // Получаем содержимое ячейки из Zemledelie
                     Cells.Add(new CellViewModel { DisplayText = cellContent });
                 }
             }
@@ -198,17 +198,17 @@ namespace Saper.ViewModel
             // Добавьте логику для открытия ячеек рядом с указанной ячейкой
             // Это может потребовать рекурсивного вызова OpenCell для каждой соседней ячейки
             // Пример:
-            OpenCellIfValid(row - 1, column - 1);
-            OpenCellIfValid(row - 1, column);
-            OpenCellIfValid(row - 1, column + 1);
-            OpenCellIfValid(row, column - 1);
-            OpenCellIfValid(row, column + 1);
-            OpenCellIfValid(row + 1, column - 1);
-            OpenCellIfValid(row + 1, column);
-            OpenCellIfValid(row + 1, column + 1);
+            _zemledelie.OpenCell(row - 1, column - 1);
+            _zemledelie.OpenCell(row - 1, column);
+            _zemledelie.OpenCell(row - 1, column + 1);
+            _zemledelie.OpenCell(row, column - 1);
+            _zemledelie.OpenCell(row, column + 1);
+            _zemledelie.OpenCell(row + 1, column - 1);
+            _zemledelie.OpenCell(row + 1, column);
+            _zemledelie.OpenCell(row + 1, column + 1);
         }
 
-        private void OpenCellIfValid(int row, int column)
+        /*private void OpenCellIfValid(int row, int column)
         {
             // Дополнительная проверка, чтобы убедиться, что ячейка существует в массиве Pole
             if (row >= 0 && row < _zemledelie.x && column >= 0 && column < _zemledelie.y)
@@ -229,7 +229,7 @@ namespace Saper.ViewModel
                     OpenAdjacentCells(row, column);
                 }
             }
-        }
+        }*/
 
         private void CheckGameCompletion()
         {
