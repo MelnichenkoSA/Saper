@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Saper.ViewModel;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -11,6 +12,8 @@ namespace Saper.Model
         public int s;
         public int x;
         public int y;
+        public int Mines;
+        private int _count;
         public Zemledelie(int x, int y)
         {
             Pole = new string[x + 2, y + 2];
@@ -19,6 +22,18 @@ namespace Saper.Model
             this.x = x;
             this.y = y;
             Generator();
+        }
+        public int Count
+        {
+            get => _count;
+            set
+            {
+                if (_count != value)
+                {
+                    _count = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         public void Generator()
         {
@@ -32,6 +47,7 @@ namespace Saper.Model
             }
             double ss = Convert.ToDouble(s);
             int mines = Convert.ToInt32(ss / 100 * 16);
+            Mines = mines;
             Random rnd = new Random();
             while (mines > 0)
             {
@@ -136,12 +152,14 @@ namespace Saper.Model
 
         public string OpenCell(int row, int column)
         {
+            row += 1;
+            column += 1;
             // Проверяем, что переданные координаты в пределах массива
-            if (row < 0 || row >= x || column < 0 || column >= y)
+            if ((row < 1) || (row > x) || (column < 1) || (column > y))
             {
                 return string.Empty; // Возвращаем пустую строку для некорректных координат
             }
-
+            
             // Проверяем, открыта ли уже ячейка
             if (Values[row, column] == "открыта")
             {
@@ -150,7 +168,7 @@ namespace Saper.Model
 
             // Открываем ячейку
             Values[row, column] = "открыта";
-
+            Count++;
             // Возвращаем содержимое ячейки
             return Pole[row, column];
         }

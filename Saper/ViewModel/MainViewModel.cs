@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Saper.ViewModel
@@ -69,6 +70,7 @@ namespace Saper.ViewModel
                 }
             }
         }
+
 
         private int _columns;
 
@@ -180,6 +182,10 @@ namespace Saper.ViewModel
                 string cellContent = _zemledelie.OpenCell(row, column);
                 cell.DisplayText = cellContent;
 
+                if(_zemledelie.Count == _zemledelie.s - _zemledelie.Mines) 
+                {
+                    Status = "Game won!";
+                }
                 if (cellContent == "Mine")
                 {
                     Status = "Game over!";
@@ -195,44 +201,49 @@ namespace Saper.ViewModel
 
         private void OpenAdjacentCells(int row, int column)
         {
-            _zemledelie.OpenCell(row - 1, column - 1);
-            _zemledelie.OpenCell(row - 1, column);
-            _zemledelie.OpenCell(row - 1, column + 1);
-            _zemledelie.OpenCell(row, column - 1);
-            _zemledelie.OpenCell(row, column + 1);
-            _zemledelie.OpenCell(row + 1, column - 1);
-            _zemledelie.OpenCell(row + 1, column);
-            _zemledelie.OpenCell(row + 1, column + 1);
+            OpenCellIfValid(row - 1, column - 1);
+            OpenCellIfValid(row - 1, column);
+            OpenCellIfValid(row - 1, column + 1);
+            OpenCellIfValid(row, column - 1);
+            OpenCellIfValid(row, column + 1);
+            OpenCellIfValid(row + 1, column - 1);
+            OpenCellIfValid(row + 1, column);
+            OpenCellIfValid(row + 1, column + 1);
         }
 
-        /*private void OpenCellIfValid(int row, int column)
+        private void OpenCellIfValid(int row, int column)
         {
             // Дополнительная проверка, чтобы убедиться, что ячейка существует в массиве Pole
-            if (row >= 0 && row < _zemledelie.x && column >= 0 && column < _zemledelie.y)
+            if (((row < _zemledelie.x)&&(row >= 0)) && ((column < _zemledelie.y)&&(column >= 0)))
             {
                 // Теперь открываем ячейку
                 string cellContent = _zemledelie.OpenCell(row, column);
                 Cells[row * Columns + column].DisplayText = cellContent;
 
                 // Если содержимое ячейки равно "мина", то, возможно, нужно обработать завершение игры
-                if (cellContent == "Mine")
+                /*if (cellContent == "Mine")
                 {
                     Status = "Game over!";
                     // Другая логика завершения игры
-                }
-                else if (cellContent == "0")
+                }*/
+                if (cellContent == "0" && _zemledelie.Values[row, column] == " ")
                 {
                     // Если ячейка пуста, открываем ячейки рядом
                     OpenAdjacentCells(row, column);
                 }
             }
-        }*/
+        }
 
         private void CheckGameCompletion()
         {
-            // Добавьте логику для проверки условия завершения игры
-            // Например, проверьте, все ли ячейки открыты, кроме мин
-            // и выведите сообщение о победе, если это так
+            if(Status == "Game over!")
+            {
+                MessageBox.Show("ВЗРЫВ");
+            }
+            if(Status == "Game won!")
+            {
+                MessageBox.Show("Победа");
+            }
         }
 
     }
