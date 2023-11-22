@@ -195,9 +195,6 @@ namespace Saper.ViewModel
 
         private void OpenAdjacentCells(int row, int column)
         {
-            // Добавьте логику для открытия ячеек рядом с указанной ячейкой
-            // Это может потребовать рекурсивного вызова OpenCell для каждой соседней ячейки
-            // Пример:
             _zemledelie.OpenCell(row - 1, column - 1);
             _zemledelie.OpenCell(row - 1, column);
             _zemledelie.OpenCell(row - 1, column + 1);
