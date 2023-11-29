@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Saper.Model
 {
@@ -14,6 +15,7 @@ namespace Saper.Model
         public int y;
         public int Mines;
         private int _count;
+        private int _score;
         public Zemledelie(int x, int y)
         {
             Pole = new string[x + 2, y + 2];
@@ -31,6 +33,18 @@ namespace Saper.Model
                 if (_count != value)
                 {
                     _count = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public int Score
+        {
+            get => _score;
+            set
+            {
+                if (_score != value)
+                {
+                    _score = value;
                     OnPropertyChanged();
                 }
             }
@@ -154,22 +168,20 @@ namespace Saper.Model
         {
             row += 1;
             column += 1;
-            // Проверяем, что переданные координаты в пределах массива
+
             if ((row < 1) || (row > x) || (column < 1) || (column > y))
             {
-                return string.Empty; // Возвращаем пустую строку для некорректных координат
+                return string.Empty; 
             }
-            
-            // Проверяем, открыта ли уже ячейка
+                       
             if (Values[row, column] == "открыта")
             {
-                return Pole[row, column]; // Если открыта, возвращаем её текущее состояние
+                return Pole[row, column]; 
             }
 
-            // Открываем ячейку
             Values[row, column] = "открыта";
             Count++;
-            // Возвращаем содержимое ячейки
+            Score += 127;
             return Pole[row, column];
         }
 

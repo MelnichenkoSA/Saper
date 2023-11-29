@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
+using System.Windows.Shapes;
 
 namespace Saper.ViewModel
 {
@@ -17,15 +19,19 @@ namespace Saper.ViewModel
         private string _selectedDifficulty;
         private ObservableCollection<CellViewModel> _cells;
         private string _status;
-
+        private int _highscore;
         private Zemledelie _zemledelie;
 
         public MainViewModel()
         {
             DifficultyLevels = new ObservableCollection<string> { "Easy", "Medium", "Hard" };
-            SelectedDifficulty = DifficultyLevels[0]; // Выберите сложность по умолчанию
+            SelectedDifficulty = DifficultyLevels[0];
+            Highscore = 0;//Convert.ToInt32(reader.ReadLine());
             InitializeGame();
         }
+
+        //StreamReader reader = new StreamReader("C:/Users/geral/source/repos/SaperPreFinal/Saper/ViewModel/HighScore.txt");
+        //StreamWriter writer = new StreamWriter("HighScore.txt", false);
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -71,7 +77,18 @@ namespace Saper.ViewModel
             }
         }
 
-
+        public int Highscore
+        {
+            get => _highscore;
+            set
+            {
+                if (_highscore != value)
+                {
+                    _highscore = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private int _columns;
 
         public int Columns
@@ -111,7 +128,6 @@ namespace Saper.ViewModel
         {
             _zemledelie = new Zemledelie(GetRows(), GetColumns());
 
-            // Инициализируем ячейки в соответствии с Zemledelie
             Cells = new ObservableCollection<CellViewModel>();
             Columns = _zemledelie.y;
             Rows = _zemledelie.x;
@@ -119,7 +135,7 @@ namespace Saper.ViewModel
             {
                 for (int j = 1; j <= _zemledelie.y; j++)
                 {
-                    string cellContent = _zemledelie.Values[i, j]; // Получаем содержимое ячейки из Zemledelie
+                    string cellContent = _zemledelie.Values[i, j]; 
                     Cells.Add(new CellViewModel { DisplayText = cellContent });
                 }
             }
@@ -174,13 +190,14 @@ namespace Saper.ViewModel
         {
             var cell = parameter as CellViewModel;
 
-            if (cell != null && cell.DisplayText != "открыта") // Добавьте проверку на открытую ячейку
+            if (cell != null && cell.DisplayText != "открыта") 
             {
                 int row = Cells.IndexOf(cell) / Columns;
                 int column = Cells.IndexOf(cell) % Columns;
 
                 string cellContent = _zemledelie.OpenCell(row, column);
                 cell.DisplayText = cellContent;
+
 
                 if(_zemledelie.Count == _zemledelie.s - _zemledelie.Mines) 
                 {
@@ -213,22 +230,15 @@ namespace Saper.ViewModel
 
         private void OpenCellIfValid(int row, int column)
         {
-            // Дополнительная проверка, чтобы убедиться, что ячейка существует в массиве Pole
+
             if (((row < _zemledelie.x)&&(row >= 0)) && ((column < _zemledelie.y)&&(column >= 0)))
             {
-                // Теперь открываем ячейку
+
                 string cellContent = _zemledelie.OpenCell(row, column);
                 Cells[row * Columns + column].DisplayText = cellContent;
 
-                // Если содержимое ячейки равно "мина", то, возможно, нужно обработать завершение игры
-                /*if (cellContent == "Mine")
-                {
-                    Status = "Game over!";
-                    // Другая логика завершения игры
-                }*/
                 if (cellContent == "0" && _zemledelie.Values[row, column] == " ")
                 {
-                    // Если ячейка пуста, открываем ячейки рядом
                     OpenAdjacentCells(row, column);
                 }
             }
@@ -236,13 +246,24 @@ namespace Saper.ViewModel
 
         private void CheckGameCompletion()
         {
+
             if(Status == "Game over!")
             {
-                MessageBox.Show("ВЗРЫВ");
+                if (Highscore < _zemledelie.Score) 
+                {
+                    Highscore = _zemledelie.Score;
+                    //writer.WriteLine(Highscore);
+                }
+                MessageBox.Show("ВЗРЫВ" + $"\nВаш счёт: {_zemledelie.Score}" + $"\nЛучший счёт: {Highscore}");
             }
             if(Status == "Game won!")
             {
-                MessageBox.Show("Победа");
+                if (Highscore < _zemledelie.Score)
+                {
+                    Highscore = _zemledelie.Score;
+                    //writer.WriteLine(Highscore);
+                }
+                MessageBox.Show("Победа" + $"\nВаш счёт: {_zemledelie.Score}" + $"\nЛучший счёт: {Highscore}");
             }
         }
 
