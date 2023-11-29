@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.IO;
 using System.Windows.Shapes;
+using System.Text.Json;
+using Saper.View;
 
 namespace Saper.ViewModel
 {
@@ -26,15 +28,25 @@ namespace Saper.ViewModel
         {
             DifficultyLevels = new ObservableCollection<string> { "Easy", "Medium", "Hard" };
             SelectedDifficulty = DifficultyLevels[0];
-            Highscore = 0;//Convert.ToInt32(reader.ReadLine());
             InitializeGame();
+            Scorenik();
         }
-
-        //StreamReader reader = new StreamReader("C:/Users/geral/source/repos/SaperPreFinal/Saper/ViewModel/HighScore.txt");
-        //StreamWriter writer = new StreamWriter("HighScore.txt", false);
-
+        string json;
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public void Scorenik()
+        {
+            if(json == null)
+            {
+                Highscore = 0;
+                json = JsonSerializer.Serialize(Highscore);
+                MessageBox.Show("ХЕХЕХЕХЕХЕЕХЕХЕХ");
+            }
+            else
+            {
+                Highscore = JsonSerializer.Deserialize<int>(json);
+                MessageBox.Show("Yes Yes");
+            }
+        }
         public ObservableCollection<string> DifficultyLevels { get; }
 
         public string SelectedDifficulty
@@ -186,6 +198,31 @@ namespace Saper.ViewModel
             }
         }
 
+        private RelayCommand _optionClickCommand;
+
+        public RelayCommand OptionClickCommand
+        {
+            get
+            {
+                return _optionClickCommand ??
+                  (_optionClickCommand = new RelayCommand(obj =>
+                  {
+                      Window1 passwordWindow = new Window1();
+
+                      if (passwordWindow.ShowDialog() == true)
+                      {
+                          SelectedDifficulty = passwordWindow.str;
+                          MessageBox.Show("Сложность установлена");
+                      }
+                      else
+                      {
+                          MessageBox.Show("Сложность не изменена");
+                      }
+
+                  }));
+            }
+        }
+
         private void CellClick(object parameter)
         {
             var cell = parameter as CellViewModel;
@@ -252,18 +289,20 @@ namespace Saper.ViewModel
                 if (Highscore < _zemledelie.Score) 
                 {
                     Highscore = _zemledelie.Score;
-                    //writer.WriteLine(Highscore);
+                    json = JsonSerializer.Serialize(Highscore);
                 }
                 MessageBox.Show("ВЗРЫВ" + $"\nВаш счёт: {_zemledelie.Score}" + $"\nЛучший счёт: {Highscore}");
+
             }
             if(Status == "Game won!")
             {
                 if (Highscore < _zemledelie.Score)
                 {
                     Highscore = _zemledelie.Score;
-                    //writer.WriteLine(Highscore);
+                    json = JsonSerializer.Serialize(Highscore);
                 }
                 MessageBox.Show("Победа" + $"\nВаш счёт: {_zemledelie.Score}" + $"\nЛучший счёт: {Highscore}");
+
             }
         }
 

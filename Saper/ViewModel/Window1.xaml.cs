@@ -25,8 +25,10 @@ namespace Saper.View
             InitializeComponent();
             DataContext = new MainViewModel();
         }
+        public dynamic str;
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
+            str = bibka.SelectedItem;
             this.DialogResult = true;
         }
     }

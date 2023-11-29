@@ -11,7 +11,7 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Width="100" Height="30" Content="Сложность" Click="Option_Click" />
+        <Button Width="100" Height="30" Content="Сложность" Command="{Binding OptionClickCommand}" />
         <DockPanel Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Cells}" >
                 <ItemsControl.ItemsPanel>

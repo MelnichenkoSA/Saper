@@ -22,23 +22,11 @@ namespace Saper
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new MainViewModel();
-        }
-        private void Option_Click(object sender, RoutedEventArgs e)
-        {
-            Window1 passwordWindow = new Window1();
-
-            if (passwordWindow.ShowDialog() == true)
-            {
-                MessageBox.Show("Сложность установлена");
-            }
-            else
-            {
-                MessageBox.Show("Авторизация не пройдена");
-            }
         }
     }
 }
