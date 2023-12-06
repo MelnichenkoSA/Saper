@@ -31,21 +31,13 @@ namespace Saper.ViewModel
             InitializeGame();
             Scorenik();
         }
-        string json;
         public event PropertyChangedEventHandler PropertyChanged;
         public void Scorenik()
         {
-            if(json == null)
-            {
-                Highscore = 0;
-                json = JsonSerializer.Serialize(Highscore);
-                MessageBox.Show("ХЕХЕХЕХЕХЕЕХЕХЕХ");
-            }
-            else
-            {
-                Highscore = JsonSerializer.Deserialize<int>(json);
-                MessageBox.Show("Yes Yes");
-            }
+                using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                {
+                    Highscore = JsonSerializer.Deserialize<int>(fs);
+                }
         }
         public ObservableCollection<string> DifficultyLevels { get; }
 
@@ -222,6 +214,23 @@ namespace Saper.ViewModel
                   }));
             }
         }
+        private RelayCommand _deleteClickCommand;
+
+        public RelayCommand DeleteClickCommand
+        {
+            get
+            {
+                return _deleteClickCommand ??
+                  (_deleteClickCommand = new RelayCommand(obj =>
+                  {
+                      Highscore = 0;
+                      using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                      {
+                          JsonSerializer.Serialize<int>(fs, Highscore);
+                      }
+                  }));
+            }
+        }
 
         private void CellClick(object parameter)
         {
@@ -289,20 +298,26 @@ namespace Saper.ViewModel
                 if (Highscore < _zemledelie.Score) 
                 {
                     Highscore = _zemledelie.Score;
-                    json = JsonSerializer.Serialize(Highscore);
+                    using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                    {
+                        JsonSerializer.Serialize<int>(fs, Highscore);
+                    }
                 }
                 MessageBox.Show("ВЗРЫВ" + $"\nВаш счёт: {_zemledelie.Score}" + $"\nЛучший счёт: {Highscore}");
-
+                Application.Current.Shutdown();
             }
             if(Status == "Game won!")
             {
                 if (Highscore < _zemledelie.Score)
                 {
                     Highscore = _zemledelie.Score;
-                    json = JsonSerializer.Serialize(Highscore);
+                    using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                    {
+                        JsonSerializer.Serialize<int>(fs, Highscore);
+                    }
                 }
                 MessageBox.Show("Победа" + $"\nВаш счёт: {_zemledelie.Score}" + $"\nЛучший счёт: {Highscore}");
-
+                Application.Current.Shutdown();
             }
         }
 

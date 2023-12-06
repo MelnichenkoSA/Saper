@@ -5,18 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Saper"
         mc:Ignorable="d"
-        Title="Сапёр" Height="450" Width="800">
-    <Grid>
+        Title="Сапёр" Height="700" Width="700" MinHeight="300" MinWidth="700" MaxWidth="800" MaxHeight="800">
+    <Grid Background="#FFBFED9A" >
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Width="100" Height="30" Content="Сложность" Command="{Binding OptionClickCommand}" />
+        <Button Height="30" Content="Выбрать сложность" Command="{Binding OptionClickCommand}" Margin="60,15,492,15" />
+        <Button Height="30" Content="Сбросить лучший результат" Command="{Binding DeleteClickCommand}" Margin="452,15,62,15" />
         <DockPanel Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Cells}" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Rows="{Binding Rows}" Columns="{Binding Columns}" />
+                        <UniformGrid Rows="{Binding Rows}" Columns="{Binding Columns}" Background="#FFF79797" >
+                            <UniformGrid.Resources />
+                        </UniformGrid>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

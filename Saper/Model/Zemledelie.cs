@@ -18,6 +18,7 @@ namespace Saper.Model
         private int _score;
         public Zemledelie(int x, int y)
         {
+            _score = 0;
             Pole = new string[x + 2, y + 2];
             Values = new string[x + 2, y + 2];
             s = x * y;
