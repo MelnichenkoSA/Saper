@@ -223,10 +223,9 @@ namespace Saper.ViewModel
                 return _deleteClickCommand ??
                   (_deleteClickCommand = new RelayCommand(obj =>
                   {
-                      Highscore = 0;
-                      using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                      using (FileStream fs = new FileStream("user.json", FileMode.Truncate))
                       {
-                          JsonSerializer.Serialize<int>(fs, Highscore);
+                          JsonSerializer.Serialize<int>(fs, 0);
                       }
                   }));
             }
@@ -298,7 +297,7 @@ namespace Saper.ViewModel
                 if (Highscore < _zemledelie.Score) 
                 {
                     Highscore = _zemledelie.Score;
-                    using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                    using (FileStream fs = new FileStream("user.json", FileMode.Truncate))
                     {
                         JsonSerializer.Serialize<int>(fs, Highscore);
                     }
@@ -311,7 +310,7 @@ namespace Saper.ViewModel
                 if (Highscore < _zemledelie.Score)
                 {
                     Highscore = _zemledelie.Score;
-                    using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+                    using (FileStream fs = new FileStream("user.json", FileMode.Truncate))
                     {
                         JsonSerializer.Serialize<int>(fs, Highscore);
                     }
